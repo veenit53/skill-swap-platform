@@ -596,6 +596,10 @@ body {
   margin-left: auto;
 }
 
+.mr-1 {
+  margin-right: .25rem;
+}
+
 .mr-2 {
   margin-right: .5rem;
 }
@@ -1120,6 +1124,10 @@ body {
   align-self: flex-start;
 }
 
+.self-end {
+  align-self: flex-end;
+}
+
 .overflow-auto {
   overflow: auto;
 }
@@ -1202,6 +1210,11 @@ body {
 
 .border-destructive\/50 {
   border-color: hsl(var(--destructive) / .5);
+}
+
+.border-green-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(34 197 94 / var(--tw-border-opacity, 1));
 }
 
 .border-input {
@@ -1302,6 +1315,10 @@ body {
 
 .fill-current {
   fill: currentColor;
+}
+
+.fill-yellow-400 {
+  fill: #facc15;
 }
 
 .p-0 {
@@ -1519,10 +1536,6 @@ body {
   font-weight: 600;
 }
 
-.capitalize {
-  text-transform: capitalize;
-}
-
 .italic {
   font-style: italic;
 }
@@ -1572,12 +1585,17 @@ body {
   color: hsl(var(--foreground) / .5);
 }
 
-.text-muted {
-  color: hsl(var(--muted));
+.text-green-600 {
+  --tw-text-opacity: 1;
+  color: rgb(22 163 74 / var(--tw-text-opacity, 1));
 }
 
 .text-muted-foreground {
   color: hsl(var(--muted-foreground));
+}
+
+.text-muted-foreground\/50 {
+  color: hsl(var(--muted-foreground) / .5);
 }
 
 .text-popover-foreground {
@@ -2606,6 +2624,10 @@ body {
 
   .sm\:justify-end {
     justify-content: flex-end;
+  }
+
+  .sm\:justify-between {
+    justify-content: space-between;
   }
 
   .sm\:space-x-2 > :not([hidden]) ~ :not([hidden]) {

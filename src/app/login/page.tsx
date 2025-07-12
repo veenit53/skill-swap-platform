@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from "@/hooks/use-toast";
 import { Header } from '@/components/header';
-import { getProfileByEmail, getProfiles } from '@/services/profile';
+import { getProfileByEmail, createProfile } from '@/services/profile';
 
 const signInSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -58,10 +58,9 @@ export default function LoginPage() {
   });
 
   const onSignInSubmit = (data: SignInFormValues) => {
-    // In a real app, you would authenticate the user here.
     const profile = getProfileByEmail(data.email);
 
-    if (profile) {
+    if (profile && profile.password === data.password) {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('currentUserId', profile.id);
       window.dispatchEvent(new Event('authChange'));
@@ -70,6 +69,12 @@ export default function LoginPage() {
         description: "Welcome back!",
       });
       router.push('/');
+    } else if (profile) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Credentials",
+        description: "The password you entered is incorrect. Please try again.",
+      });
     } else {
       toast({
         variant: "destructive",
@@ -80,18 +85,32 @@ export default function LoginPage() {
   };
 
   const onSignUpSubmit = (data: SignUpFormValues) => {
-    // In a real app, you would create the user account here.
-    console.log('Sign up data:', data);
-    // For now, we'll just log them in as the first user as a mock
-    const profiles = getProfiles();
-    const firstProfile = profiles[0];
+    const existingProfile = getProfileByEmail(data.email);
+
+    if (existingProfile) {
+        toast({
+            variant: "destructive",
+            title: "Email already exists",
+            description: "An account with this email already exists. Please sign in.",
+        });
+        return;
+    }
+
+    const newProfile = createProfile({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+    });
+    
     localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('currentUserId', firstProfile.id);
+    localStorage.setItem('currentUserId', newProfile.id);
     window.dispatchEvent(new Event('authChange'));
+    
     toast({
       title: "Account Created",
       description: "You have successfully signed up.",
     });
+    
     router.push('/');
   };
 

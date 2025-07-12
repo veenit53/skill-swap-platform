@@ -1,13 +1,37 @@
-import type { Profile } from '@/lib/types';
+
+import type { Profile, Review } from '@/lib/types';
+import { deleteAllUserRequests } from './requests';
+
+const PROFILES_STORAGE_KEY = 'skill_swap_profiles';
 
 // This is a mock database. In a real application, you would use a real database.
-let allProfiles: Profile[] = [
-  { id: 'user-1', name: 'Alex Doe', email: 'alex.doe@example.com', location: 'San Francisco, CA', avatarUrl: 'https://placehold.co/128x128.png', skillsOffered: ['UI/UX Design', 'Figma', 'Prototyping'], skillsWanted: ['React Native', 'Firebase'], availability: '5-10 hours per week', isPublic: true },
-  { id: 'user-2', name: 'Jane Smith', email: 'jane.smith@example.com', location: 'New York, NY', avatarUrl: 'https://placehold.co/128x128.png', skillsOffered: ['React Native', 'TypeScript'], skillsWanted: ['Figma', 'Web Accessibility'], availability: '3-5 hours per week', isPublic: true },
-  { id: 'user-3', name: 'Sam Wilson', email: 'sam.wilson@example.com', location: 'Chicago, IL', avatarUrl: 'https://placehold.co/128x128.png', skillsOffered: ['Python', 'Data Analysis', 'Machine Learning'], skillsWanted: ['Project Management', 'Agile'], availability: '10+ hours per week', isPublic: true },
-  { id: 'user-4', name: 'Maria Garcia', email: 'maria.garcia@example.com', location: 'Austin, TX', avatarUrl: 'https://placehold.co/128x128.png', skillsOffered: ['Content Writing', 'SEO Strategy'], skillsWanted: ['Graphic Design', 'Video Editing'], availability: 'Flexible', isPublic: false },
-  { id: 'user-5', name: 'Kenji Tanaka', email: 'kenji.tanaka@example.com', location: 'Tokyo, Japan', avatarUrl: 'https://placehold.co/128x128.png', skillsOffered: ['Firebase', 'Google Cloud', 'Node.js'], skillsWanted: ['Go', 'Kubernetes'], availability: '8 hours per week', isPublic: true },
-];
+let allProfiles: Profile[] = [];
+
+function loadProfiles() {
+    if (typeof window === 'undefined') {
+        allProfiles = [];
+        return;
+    }
+
+    try {
+        const storedProfiles = localStorage.getItem(PROFILES_STORAGE_KEY);
+        allProfiles = storedProfiles ? JSON.parse(storedProfiles) : [];
+    } catch (error) {
+        console.error("Failed to load profiles from localStorage", error);
+        allProfiles = [];
+    }
+}
+
+
+function saveProfiles() {
+    if (typeof window !== 'undefined') {
+        localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(allProfiles, null, 2));
+        window.dispatchEvent(new Event('dataChanged'));
+    }
+}
+
+// Load profiles when the module is imported on the client side
+loadProfiles();
 
 export function getProfiles(): Profile[] {
     return allProfiles;
@@ -25,5 +49,44 @@ export function updateProfile(updatedProfile: Profile) {
     const profileIndex = allProfiles.findIndex(p => p.id === updatedProfile.id);
     if (profileIndex !== -1) {
       allProfiles[profileIndex] = updatedProfile;
+      saveProfiles();
     }
 }
+
+export function createProfile(data: { name: string; email: string; password?: string; }): Profile {
+    const newProfile: Profile = {
+        id: `user-${Date.now()}`,
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        location: '',
+        avatarUrl: `https://placehold.co/128x128.png`,
+        skillsOffered: [],
+        skillsWanted: [],
+        availability: 'Flexible',
+        isPublic: true,
+        reviews: [],
+    };
+    allProfiles.push(newProfile);
+    saveProfiles();
+    return newProfile;
+}
+
+export function deleteProfile(id: string) {
+    allProfiles = allProfiles.filter(p => p.id !== id);
+    deleteAllUserRequests(id);
+    saveProfiles();
+}
+
+export function addReviewToProfile(profileId: string, review: Review) {
+    const profile = getProfileById(profileId);
+    if (profile) {
+        if (!profile.reviews) {
+            profile.reviews = [];
+        }
+        profile.reviews.push(review);
+        updateProfile(profile);
+    }
+}
+
+    

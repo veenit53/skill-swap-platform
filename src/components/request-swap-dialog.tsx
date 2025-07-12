@@ -84,11 +84,11 @@ export function RequestSwapDialog({ children, currentUserProfile, targetProfile 
               name="offeredSkill"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Choose one of your offered skills</FormLabel>
+                  <FormLabel>You will offer</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a skill you offer" />
+                        <SelectValue placeholder="Select one of your skills" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -106,11 +106,11 @@ export function RequestSwapDialog({ children, currentUserProfile, targetProfile 
               name="wantedSkill"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Choose one of their wanted skills</FormLabel>
+                  <FormLabel>In exchange for</FormLabel>
                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a skill you want to learn" />
+                        <SelectValue placeholder="Select a skill they offer" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -128,16 +128,16 @@ export function RequestSwapDialog({ children, currentUserProfile, targetProfile 
               name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Message</FormLabel>
+                  <FormLabel>Message (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Add an optional message..." {...field} />
+                    <Textarea placeholder="Add a friendly message to introduce yourself!" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <DialogFooter>
-              <Button type="submit">Submit</Button>
+              <Button type="submit">Send Request</Button>
             </DialogFooter>
           </form>
         </Form>

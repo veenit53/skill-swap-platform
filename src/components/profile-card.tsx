@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 
-export function ProfileCard({ profile, isLoggedIn = false }: { profile: Profile; isLoggedIn?: boolean; }) {
+export function ProfileCard({ profile }: { profile: Profile }) {
   const initials = profile.name.split(' ').map(n => n[0]).join('');
 
   return (
